@@ -60,3 +60,5 @@ AS [Date Hired]
 FROM HumanResources.Employee AS hre;
 
 --END OF 02_02 Query 2
+
+--FILENAME 02_03.sql
