@@ -1,0 +1,23 @@
+CREATE DATABASE SuperMart_Db;
+
+USE SuperMart_Db;
+GO
+
+CREATE TABLE Customers(
+CustomerId INT PRIMARY KEY IDENTITY(1,1),
+FirstName VARCHAR(50) NOT NULL,
+LastName VARCHAR(50) NOT NULL,
+City VARCHAR(100) NOT NULL,
+Phone VARCHAR(20) NULL,
+Email VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE Orders(
+OrderId INT PRIMARY KEY IDENTITY(100,1),
+CustomerId INT NOT NULL,
+OrderDate DATE NOT NULL, 
+StatusCode CHAR(1) NOT NULL CHECK (StatusCode IN ('P','D','C')),
+TotalAmount DECIMAL(10,2) NOT NULL,
+CONSTRAINT FK_Orders_Customers FOREIGN KEY (CustomerId) REFERENCES Customers(CustomerId)
+);
+
