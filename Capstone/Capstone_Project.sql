@@ -189,3 +189,72 @@ ORDER BY o.TotalAmount DESC;
                                                    ACTIVITY 7
   =============================================================================================================
 */
+
+SELECT
+CustomerId,
+FirstName + ' ' + LastName AS [Customer Name],
+City
+FROM Customers
+WHERE CustomerId IN(
+SELECT CustomerId
+FROM Orders
+);
+
+
+SELECT
+CustomerId,
+FirstName + ' ' + LastName AS [Customer Name],
+City
+FROM Customers c
+WHERE EXISTS(
+SELECT 1
+FROM Orders o
+WHERE o.CustomerId = c.CustomerId
+);
+
+GO
+CREATE VIEW CustomerOrders AS
+SELECT 
+    c.FirstName + ' ' + c.LastName AS [Customer Name],
+    o.OrderDate
+FROM Customers c
+INNER JOIN Orders o 
+    ON c.CustomerId = o.CustomerId;
+GO
+
+SELECT * FROM CustomerOrders
+
+GO
+WITH CustomerOrderCount AS (
+SELECT
+c.CustomerId,
+c.FirstName + ' ' + c.LastName AS [Customer Name],
+COUNT(o.OrderId) AS [Number of Orders]
+FROM Customers c
+INNER JOIN Orders o
+ON c.CustomerId = o.CustomerId
+GROUP BY c.CustomerId, c.FirstName, c.LastName
+)
+SELECT 
+[Customer Name],
+[Number of Orders]
+FROM CustomerOrderCount;
+
+GO
+CREATE PROCEDURE GetCustomerOrders
+@CustomerID INT
+AS 
+BEGIN 
+SELECT
+o.OrderId,
+o.OrderDate,
+o.StatusCode,
+o.TotalAmount
+FROM Orders o
+WHERE o.CustomerId = @CustomerID;
+END;
+GO
+
+EXEC GetCustomerOrders @CustomerID = 1;
+
+
